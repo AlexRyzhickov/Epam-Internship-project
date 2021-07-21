@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/profileFragment"
+        android:icon="@drawable/resume_selector"
+        android:title="Profile" />
+    <item
+        android:id="@+id/betFragment"
+        android:icon="@drawable/dice_selector"
+        android:title="Bets" />
+
+    <item
+        android:id="@+id/inboxFragment"
+        android:icon="@drawable/inbox_selector"
+        android:title="Inbox" />
+</menu>

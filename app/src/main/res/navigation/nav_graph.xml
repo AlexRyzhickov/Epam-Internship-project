@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto" android:id="@+id/nav_graph"
+    app:startDestination="@id/betFragment">
+
+    <fragment
+        android:id="@+id/betFragment"
+        android:name="com.epam.bet.fragments.BetsFragment"
+        android:label="BetFragment" >
+        <action
+            android:id="@+id/action_betFragment_to_pickUserFragment"
+            app:destination="@id/pickUserFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right" />
+    </fragment>
+    <fragment
+        android:id="@+id/inboxFragment"
+        android:name="com.epam.bet.fragments.InboxFragment"
+        android:label="InboxFragment" />
+    <fragment
+        android:id="@+id/profileFragment"
+        android:name="com.epam.bet.fragments.ProfileFragment"
+        android:label="ProfileFragment" />
+    <fragment
+        android:id="@+id/pickUserFragment"
+        android:name="com.epam.bet.fragments.PickUserFragment"
+        android:label="PickUserFragment" />
+</navigation>
