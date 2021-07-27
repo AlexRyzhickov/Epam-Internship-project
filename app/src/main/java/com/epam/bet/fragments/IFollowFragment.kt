@@ -8,9 +8,10 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.epam.bet.R
 import com.epam.bet.adapters.FollowersRecyclerAdapter
-import com.epam.bet.databinding.FollowersFragmentBinding
 import com.epam.bet.databinding.IFollowFragmentBinding
+import com.epam.bet.dialogs.SearchWindowDialog
 import com.epam.bet.entities.User
+import androidx.fragment.app.DialogFragment
 
 class IFollowFragment : Fragment(R.layout.i_follow_fragment){
     private var _binding: IFollowFragmentBinding? = null
@@ -27,12 +28,26 @@ class IFollowFragment : Fragment(R.layout.i_follow_fragment){
         val users = ArrayList<User>()
 
         //adding some dummy data to the list
-        users.add(User("Belal Khan", "Ranchi Jharkhand"))
-        users.add(User("Ramiz Khan", "Ranchi Jharkhand"))
-        users.add(User("Faiz Khan", "Ranchi Jharkhand"))
+        users.add(User("Belal Khan", "BelalKhan@gmail.com"))
+        users.add(User("Ramiz Khan", "RamizKhan@gmail.com"))
+        users.add(User("Faiz Khan", "FaizKhan@gmail.com"))
+        users.add(User("Belal Khan", "BelalKhan@gmail.com"))
+        users.add(User("Ramiz Khan", "RamizKhan@gmail.com"))
+        users.add(User("Faiz Khan", "FaizKhan@gmail.com"))
+        users.add(User("Belal Khan", "BelalKhan@gmail.com"))
+        users.add(User("Ramiz Khan", "RamizKhan@gmail.com"))
+        users.add(User("Faiz Khan", "FaizKhan@gmail.com"))
+        users.add(User("Belal Khan", "BelalKhan@gmail.com"))
+        users.add(User("Ramiz Khan", "RamizKhan@gmail.com"))
+        users.add(User("Faiz Khan", "FaizKhan@gmail.com"))
 
         recyclerView.layoutManager = LinearLayoutManager(activity)
         recyclerView.adapter = FollowersRecyclerAdapter(users)
+
+        binding.floatingActionButton.setOnClickListener {
+            val searchWindowDialog = SearchWindowDialog()
+            searchWindowDialog.show(parentFragmentManager, "search")
+        }
 
         return binding.root
     }
