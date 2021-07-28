@@ -5,19 +5,23 @@ import android.content.SharedPreferences
 import android.os.Bundle
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.NavigationUI
 import com.epam.bet.entities.User
 import com.epam.bet.extensions.showToast
 import com.epam.bet.interfaces.AuthInterface
+import com.epam.bet.viewmodel.BetsViewModel
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import kotlinx.coroutines.launch
+import org.koin.android.ext.android.get
 
 class MainActivity : AppCompatActivity(), AuthInterface {
 
     private lateinit var bottomNavigationView: BottomNavigationView
     private lateinit var sharedPreferences : SharedPreferences
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -26,14 +30,16 @@ class MainActivity : AppCompatActivity(), AuthInterface {
         bottomNavigationView = findViewById(R.id.bottomNavigationView)
         bottomNavigationView.itemIconTintList = null
 
-        sharedPreferences = this.getSharedPreferences(this.packageName, Context.MODE_PRIVATE)
+        //val viewModel =  ViewModelProvider(this).get(BetsViewModel::class.java)
+
+        sharedPreferences = this.getSharedPreferences("degenerat", Context.MODE_PRIVATE)
 
         val navHostFragment = supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment
         val inflater = navHostFragment.navController.navInflater
         val graph = inflater.inflate(R.navigation.nav_graph)
 
         val value = sharedPreferences.getString("email", "none")
-        if (value == null || value.equals("none")) {
+        if (value == null || value == "none") {
             graph.startDestination = R.id.authFragment
             bottomNavigationView.visibility = View.INVISIBLE
         } else {
