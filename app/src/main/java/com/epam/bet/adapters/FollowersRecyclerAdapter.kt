@@ -6,9 +6,10 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.epam.bet.R
+import com.epam.bet.entities.Follower
 import com.epam.bet.entities.User
 
-class FollowersRecyclerAdapter(private val followersArray: List<User?>): RecyclerView.Adapter<FollowersRecyclerAdapter.FollowersViewHolder>() {
+class FollowersRecyclerAdapter(private val followersArray: List<Follower?>): RecyclerView.Adapter<FollowersRecyclerAdapter.FollowersViewHolder>() {
 
     override fun onCreateViewHolder(
         parent: ViewGroup,
@@ -32,7 +33,7 @@ class FollowersRecyclerAdapter(private val followersArray: List<User?>): Recycle
 
     class FollowersViewHolder(private val itemView: View) : RecyclerView.ViewHolder(itemView) {
 
-        fun bind(user: User?) {
+        fun bind(user: Follower?) {
             print("new user arrived! ${user?.name}")
             val textName = itemView.findViewById(R.id.username) as TextView
             val textEmail = itemView.findViewById(R.id.email) as TextView

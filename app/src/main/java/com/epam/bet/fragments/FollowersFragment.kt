@@ -6,16 +6,24 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.epam.bet.R
 import com.epam.bet.adapters.FollowersRecyclerAdapter
 import com.epam.bet.databinding.FollowersFragmentBinding
 import com.epam.bet.databinding.ProfileFragmentBinding
+import com.epam.bet.entities.Follower
 import com.epam.bet.entities.User
+import com.epam.bet.viewmodel.FollowersViewModel
+import com.epam.bet.viewmodel.IFollowViewModel
+import org.koin.android.ext.android.get
 
 class FollowersFragment: Fragment(R.layout.followers_fragment) {
     private var _binding: FollowersFragmentBinding? = null
     private val binding get() = _binding!!
+    private lateinit var listAdapter: FollowersRecyclerAdapter
+    private lateinit var followersRecyclerView: RecyclerView
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -23,17 +31,20 @@ class FollowersFragment: Fragment(R.layout.followers_fragment) {
         savedInstanceState: Bundle?
     ): View? {
         _binding = FollowersFragmentBinding.inflate(inflater, container, false)
-        val recyclerView = binding.followersRecyclerView
+        followersRecyclerView = binding.followersRecyclerView
+        val viewModel =  get<FollowersViewModel>()
+        viewModel.getFollowersList()
 
-        val users = ArrayList<User>()
-
-        //adding some dummy data to the list
-        users.add(User("Belal Khan", "Ranchi Jharkhand"))
-        users.add(User("Ramiz Khan", "Ranchi Jharkhand"))
-        users.add(User("Faiz Khan", "Ranchi Jharkhand"))
-
-        recyclerView.layoutManager = LinearLayoutManager(activity)
-        recyclerView.adapter = FollowersRecyclerAdapter(users)
+        viewModel.followersList.observe(viewLifecycleOwner, Observer {
+            it.let {
+                listAdapter = FollowersRecyclerAdapter(it)
+                followersRecyclerView.apply{
+                    layoutManager = LinearLayoutManager(activity);
+                    adapter = listAdapter
+                    //addItemDecoration(DividerItemDecoration(activity, DividerItemDecoration.VERTICAL))
+                }
+            }
+        })
 
         return binding.root
     }
