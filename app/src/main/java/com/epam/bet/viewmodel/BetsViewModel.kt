@@ -24,7 +24,7 @@ class BetsViewModel(application: Application) : AndroidViewModel(application) {
 
 
     fun fetchUser(){
-        sharedPreferences = getApplication<Application>().applicationContext.getSharedPreferences("degenerat", Context.MODE_PRIVATE)
+        sharedPreferences = getApplication<Application>().applicationContext.getSharedPreferences("BetAppSettings", Context.MODE_PRIVATE)
         val user: User = User()
         var newBetList: MutableList<Bet> = mutableListOf()
         val email = sharedPreferences.getString("email", "none")
