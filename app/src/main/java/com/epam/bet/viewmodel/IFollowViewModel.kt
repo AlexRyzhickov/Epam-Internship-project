@@ -56,7 +56,7 @@ class IFollowViewModel(application: Application) : AndroidViewModel(application)
         users.document(email).get().addOnCompleteListener { task ->
             if (task.isSuccessful) {
                 val document = task.result
-                if (document != null && myEmail != "none") {
+                if (document != null && document.exists() && myEmail != "none") {
                     Log.d(TAG, "DocumentSnapshot data: " + task.result!!.data)
                     val newIFollow = mapOf(
                         "name" to document.data?.get("name"),
@@ -68,7 +68,10 @@ class IFollowViewModel(application: Application) : AndroidViewModel(application)
                     )
 
                     users.document(myEmail!!).collection("i_follow").add(newIFollow).addOnSuccessListener {
-                        iFollowList.value?.add(Follower(document.data?.get("name").toString(), document.data?.get("email").toString()))
+                        var newList: MutableList<Follower> = mutableListOf()
+                        newList.addAll(iFollowList.value!!)
+                        newList.add(Follower(document.data?.get("name").toString(), document.data?.get("email").toString()))
+                        iFollowList.value = newList
                         successListener(email)
                     }. addOnFailureListener { failListener() }
                     users.document(email).collection("followers").add(newFollower)
