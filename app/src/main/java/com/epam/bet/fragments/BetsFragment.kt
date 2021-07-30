@@ -4,10 +4,13 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ArrayAdapter
+import android.widget.Spinner
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.epam.bet.R
@@ -23,8 +26,9 @@ import org.koin.android.ext.android.get
 class BetsFragment : Fragment(R.layout.bets_fragment_layout), RecyclerViewClickListener {
     private var _binding: BetsFragmentLayoutBinding? = null
     private val binding get() = _binding!!
-    private lateinit var weaponAdapter: BetsListAdapter
+    private lateinit var betsAdapter: BetsListAdapter
     private lateinit var betsList: RecyclerView
+    private var followerNamesList: Array<String> = arrayOf()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -39,15 +43,28 @@ class BetsFragment : Fragment(R.layout.bets_fragment_layout), RecyclerViewClickL
         //val viewModel = ViewModelProvider(this).get(BetsViewModel::class.java)
         val viewModel =  get<BetsViewModel>()
         viewModel.fetchUser()
+        viewModel.getIFollowList()
         //viewModel.addBet()
+
+
+        viewModel.iFollowList.observe(viewLifecycleOwner, Observer {
+            it?.let {
+                followerNamesList =  viewModel.getFollowersNames()
+                val followerAdapter = ArrayAdapter(requireActivity(), R.layout.followers_spinner_item, followerNamesList)
+                val followerList: Spinner = binding.FollowerSpinner
+                followerList.adapter = followerAdapter
+                followerAdapter.notifyDataSetChanged()
+
+            }
+        })
 
         viewModel.betsList.observe(viewLifecycleOwner, Observer {
             it?.let {
-                weaponAdapter = BetsListAdapter(it, this)
+                betsAdapter = BetsListAdapter(it, this)
                 betsList.apply{
                     layoutManager = LinearLayoutManager(activity);
-                    adapter = weaponAdapter
-                    //addItemDecoration(DividerItemDecoration(activity, DividerItemDecoration.VERTICAL))
+                    adapter = betsAdapter
+                    addItemDecoration(DividerItemDecoration(activity, DividerItemDecoration.VERTICAL))
                 }
             }
         })

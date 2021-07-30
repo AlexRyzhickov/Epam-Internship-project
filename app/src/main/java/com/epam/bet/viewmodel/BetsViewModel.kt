@@ -20,7 +20,35 @@ class BetsViewModel(application: Application) : AndroidViewModel(application) {
     private val users = db.collection("users")
     var activeUser: MutableLiveData<User> = MutableLiveData()
     var betsList: MutableLiveData<List<Bet?>> = MutableLiveData()
-    private lateinit var sharedPreferences : SharedPreferences
+    private lateinit var sharedPreferences: SharedPreferences
+    var iFollowList: MutableLiveData<MutableList<Follower>> = MutableLiveData()
+
+    fun getIFollowList() {
+        sharedPreferences = getApplication<Application>().applicationContext
+            .getSharedPreferences("BetAppSettings", Context.MODE_PRIVATE)
+        var newList: MutableList<Follower> = mutableListOf()
+        val email = sharedPreferences.getString("email", "none")
+        if (email != "none") {
+            users.document(email!!).collection("i_follow").get().addOnSuccessListener { documents ->
+                for (document in documents) {
+                    var follower: Follower = Follower(
+                        document.data?.get("name").toString(),
+                        document.data?.get("email").toString()
+                    )
+                    newList.add(follower)
+                }
+                iFollowList.value = newList
+            }
+        }
+    }
+
+    fun getFollowersNames(): Array<String> {
+        var nameList: MutableList<String> = mutableListOf<String>()
+        iFollowList.value?.forEach {
+            nameList.add(it.name)
+        }
+        return nameList.toTypedArray()
+    }
 
 
     fun fetchUser(){
