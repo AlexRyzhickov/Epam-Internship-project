@@ -51,7 +51,10 @@ class SearchWindowDialog: DialogFragment() {
         binding.searchButton.setOnClickListener{
             if (!searchInProgress) {
                 var email: String = binding.searchField.text.trim().toString()
-                if (!viewModel.isIFollow(email)){
+                if (viewModel.isItMyEmail(email)){
+                    context?.showToast("You can't follow yourself!")
+                }
+                else if (!viewModel.isIFollow(email)){
                     searchInProgress = true
                     viewModel.addIFollow(email, ::searchSuccessCallback, ::searchFailCallback)
                 }

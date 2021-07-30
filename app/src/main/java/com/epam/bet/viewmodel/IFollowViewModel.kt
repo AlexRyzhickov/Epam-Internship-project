@@ -37,6 +37,11 @@ class IFollowViewModel(application: Application) : AndroidViewModel(application)
         }
     }
 
+    fun isItMyEmail(email: String): Boolean {
+        val myEmail = sharedPreferences.getString("email", "none")
+        return email == myEmail
+    }
+
     fun isIFollow(email: String): Boolean {
         for (v in iFollowList.value!!){
             if (v.email == email)
