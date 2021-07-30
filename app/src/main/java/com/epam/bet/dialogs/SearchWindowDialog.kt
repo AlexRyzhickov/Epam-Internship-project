@@ -1,10 +1,14 @@
 package com.epam.bet.dialogs
 
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.DialogFragment
+import com.epam.bet.R
 import com.epam.bet.databinding.SearchWindowDialogBinding
 import com.epam.bet.extensions.showToast
 import com.epam.bet.viewmodel.FollowersViewModel
@@ -26,6 +30,24 @@ class SearchWindowDialog: DialogFragment() {
 
         val viewModel =  get<IFollowViewModel>()
 
+        binding.searchButton.isEnabled = false
+        binding.searchField.addTextChangedListener(object: TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+            }
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                if (s!!.isEmpty()){
+                    binding.searchButton.isEnabled = false
+                    binding.searchButton.setTextColor(ContextCompat.getColor(context!!, R.color.white))
+                    binding.searchButton.setBackgroundColor(ContextCompat.getColor(context!!, R.color.grey))
+                }
+                else {
+                    binding.searchButton.isEnabled = true
+                    binding.searchButton.setBackgroundColor(ContextCompat.getColor(context!!, R.color.blue))
+                }
+            }
+            override fun afterTextChanged(s: Editable?) {
+            }
+        })
         binding.searchButton.setOnClickListener{
             if (!searchInProgress) {
                 var email: String = binding.searchField.text.trim().toString()
