@@ -5,48 +5,33 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.epam.bet.R
-import com.epam.bet.adapters.FollowersRecyclerAdapter
+import com.epam.bet.adapters.UserDataAdapter
 import com.epam.bet.databinding.IFollowFragmentBinding
 import com.epam.bet.dialogs.SearchWindowDialog
-import com.epam.bet.entities.User
-import androidx.fragment.app.DialogFragment
-import androidx.lifecycle.Observer
-import androidx.recyclerview.widget.RecyclerView
-import com.epam.bet.adapters.BetsListAdapter
-import com.epam.bet.viewmodel.BetsViewModel
-import com.epam.bet.viewmodel.IFollowViewModel
-import org.koin.android.ext.android.get
+import com.epam.bet.viewmodel.SubscribeViewModel
 
 
-class IFollowFragment : Fragment(R.layout.i_follow_fragment){
+class IFollowFragment : Fragment(R.layout.i_follow_fragment) {
+
     private var _binding: IFollowFragmentBinding? = null
     private val binding get() = _binding!!
-    private lateinit var listAdapter: FollowersRecyclerAdapter
-    private lateinit var iFollowRecyclerView: RecyclerView
+    private lateinit var subscribersAdapter: UserDataAdapter
 
     override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
+            inflater: LayoutInflater,
+            container: ViewGroup?,
+            savedInstanceState: Bundle?
     ): View? {
         _binding = IFollowFragmentBinding.inflate(inflater, container, false)
-        iFollowRecyclerView = binding.iFollowRecyclerView
 
-        val viewModel =  get<IFollowViewModel>()
-        viewModel.getIFollowList()
+        val viewModel = ViewModelProvider(requireActivity()).get(SubscribeViewModel::class.java)
 
-        viewModel.iFollowList.observe(viewLifecycleOwner, Observer {
-            it.let {
-                listAdapter = FollowersRecyclerAdapter(it)
-                iFollowRecyclerView.apply{
-                    layoutManager = LinearLayoutManager(activity);
-                    adapter = listAdapter
-                    //addItemDecoration(DividerItemDecoration(activity, DividerItemDecoration.VERTICAL))
-                }
-            }
-        })
+        subscribersAdapter = UserDataAdapter(viewModel.getSubscriptionOptions())
+        binding.iFollowRecyclerView.adapter = subscribersAdapter
+        binding.iFollowRecyclerView.layoutManager = LinearLayoutManager(context)
 
         binding.floatingActionButton.setOnClickListener {
             val searchWindowDialog = SearchWindowDialog()
@@ -54,6 +39,16 @@ class IFollowFragment : Fragment(R.layout.i_follow_fragment){
         }
 
         return binding.root
+    }
+
+    override fun onStart() {
+        super.onStart()
+        subscribersAdapter.startListening()
+    }
+
+    override fun onStop() {
+        super.onStop()
+        subscribersAdapter.stopListening()
     }
 
     override fun onDestroy() {

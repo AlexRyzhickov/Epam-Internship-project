@@ -11,8 +11,7 @@ import androidx.fragment.app.DialogFragment
 import com.epam.bet.R
 import com.epam.bet.databinding.SearchWindowDialogBinding
 import com.epam.bet.extensions.showToast
-import com.epam.bet.viewmodel.FollowersViewModel
-import com.epam.bet.viewmodel.IFollowViewModel
+import com.epam.bet.viewmodel.SubscribeViewModel
 import org.koin.android.ext.android.get
 
 class SearchWindowDialog: DialogFragment() {
@@ -28,7 +27,7 @@ class SearchWindowDialog: DialogFragment() {
     ): View? {
         _binding = SearchWindowDialogBinding.inflate(inflater, container, false)
 
-        val viewModel =  get<IFollowViewModel>()
+        val viewModel =  get<SubscribeViewModel>()
 
         binding.searchButton.isEnabled = false
         binding.searchField.addTextChangedListener(object: TextWatcher {
@@ -54,13 +53,13 @@ class SearchWindowDialog: DialogFragment() {
                 if (viewModel.isItMyEmail(email)){
                     context?.showToast("You can't follow yourself!")
                 }
-                else if (!viewModel.isIFollow(email)){
+                else if (!viewModel.isIFollow(email, context)){
                     searchInProgress = true
                     viewModel.addIFollow(email, ::searchSuccessCallback, ::searchFailCallback)
                 }
-                else {
+               /* else {
                     context?.showToast("You're already following this user!")
-                }
+                }*/
             }
             else{
                 context?.showToast("Search in progress. Please, wait.")

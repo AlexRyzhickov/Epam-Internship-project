@@ -15,8 +15,6 @@ import com.epam.bet.interfaces.AuthInterface
 import com.epam.bet.viewmodel.BetsViewModel
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import kotlinx.coroutines.launch
-import org.koin.android.ext.android.get
-
 class MainActivity : AppCompatActivity(), AuthInterface {
 
     private lateinit var bottomNavigationView: BottomNavigationView
@@ -29,8 +27,6 @@ class MainActivity : AppCompatActivity(), AuthInterface {
 
         bottomNavigationView = findViewById(R.id.bottomNavigationView)
         bottomNavigationView.itemIconTintList = null
-
-        //val viewModel =  ViewModelProvider(this).get(BetsViewModel::class.java)
 
         sharedPreferences = this.getSharedPreferences("BetAppSettings", Context.MODE_PRIVATE)
 
