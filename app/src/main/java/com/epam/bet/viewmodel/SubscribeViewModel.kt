@@ -17,15 +17,13 @@ class SubscribeViewModel(application: Application) : AndroidViewModel(applicatio
     private val users = db.collection("users")
     private lateinit var sharedPreferences: SharedPreferences
 
-    fun isItMyEmail(email: String): Boolean {
-        sharedPreferences = getApplication<Application>().applicationContext.getSharedPreferences("BetAppSettings", Context.MODE_PRIVATE)
-        val myEmail = sharedPreferences.getString("email", "none")
-        return email == myEmail
+    fun isCurUserEmail(email: String): Boolean {
+        val curUserEmail = getSharedPreferencesData("email")
+        return email == curUserEmail
     }
 
     fun isIFollow(email: String, context: Context?): Boolean {
-        sharedPreferences = getApplication<Application>().applicationContext.getSharedPreferences("BetAppSettings", Context.MODE_PRIVATE)
-        val userEmail = sharedPreferences.getString("email", "none")
+        val userEmail = getSharedPreferencesData("email")
         val emailList = mutableListOf<String>()
         var isSuccess = false
         users.document(userEmail!!).collection("i_follow").get()
@@ -48,24 +46,24 @@ class SubscribeViewModel(application: Application) : AndroidViewModel(applicatio
     }
 
     fun addIFollow(email: String, successListener: (email: String) -> Unit, failListener: () -> Unit) {
-        val myEmail = sharedPreferences.getString("email", "none")
-        val myName = sharedPreferences.getString("name", "none")
+        val curUserEmail = getSharedPreferencesData("email")
+        val curUserName = getSharedPreferencesData("name")
 
         val TAG = "addIFollow debug"
         users.document(email).get().addOnCompleteListener { task ->
             if (task.isSuccessful) {
                 val document = task.result
-                if (document != null && document.exists() && myEmail != "none") {
+                if (document != null && document.exists() && curUserEmail != "none") {
                     Log.d(TAG, "DocumentSnapshot data: " + task.result!!.data)
                     val newIFollow = mapOf(
                             "name" to document.data?.get("name"),
                             "email" to document.data?.get("email")
                     )
                     val newFollower = mapOf(
-                            "name" to myName,
-                            "email" to myEmail
+                            "name" to curUserName,
+                            "email" to curUserEmail
                     )
-                    users.document(myEmail!!).collection("i_follow").add(newIFollow)
+                    users.document(curUserEmail!!).collection("i_follow").add(newIFollow)
                             .addOnSuccessListener {
                                 successListener(email)
                             }.addOnFailureListener {
@@ -84,8 +82,7 @@ class SubscribeViewModel(application: Application) : AndroidViewModel(applicatio
     }
 
     fun getSubscriptionOptions(): FirestoreRecyclerOptions<Follower> {
-        sharedPreferences = getApplication<Application>().applicationContext.getSharedPreferences("BetAppSettings", Context.MODE_PRIVATE)
-        val email = sharedPreferences.getString("email", "none")
+        val email = getSharedPreferencesData("email")
         val query: Query = users.document(email!!).collection("i_follow")
         return FirestoreRecyclerOptions.Builder<Follower>()
                 .setQuery(query, Follower::class.java)
@@ -93,12 +90,18 @@ class SubscribeViewModel(application: Application) : AndroidViewModel(applicatio
     }
 
     fun getFollowersOptions(): FirestoreRecyclerOptions<Follower> {
-        sharedPreferences = getApplication<Application>().applicationContext.getSharedPreferences("BetAppSettings", Context.MODE_PRIVATE)
-        val email = sharedPreferences.getString("email", "none")
+        val email = getSharedPreferencesData("email")
         val query: Query = users.document(email!!).collection("followers")
         return FirestoreRecyclerOptions.Builder<Follower>()
                 .setQuery(query, Follower::class.java)
                 .build()
+    }
+
+    fun getSharedPreferencesData(key: String, defValue: String = "none"): String? {
+        if (!this::sharedPreferences.isInitialized){
+            sharedPreferences = getApplication<Application>().applicationContext.getSharedPreferences("BetAppSettings", Context.MODE_PRIVATE)
+        }
+        return sharedPreferences.getString(key, defValue)
     }
 
 }
