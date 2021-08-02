@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.Spinner
 import androidx.fragment.app.Fragment
@@ -16,6 +17,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.epam.bet.R
 import com.epam.bet.adapters.BetsListAdapter
 import com.epam.bet.databinding.BetsFragmentLayoutBinding
+import com.epam.bet.fragments.dialogs.BetDescriptionDialog
 import com.epam.bet.interfaces.RecyclerViewClickListener
 import com.epam.bet.viewmodel.BetsViewModel
 import com.google.android.material.floatingactionbutton.FloatingActionButton
@@ -23,7 +25,7 @@ import org.koin.android.ext.android.get
 
 //https://epam.sharepoint.com/sites/EPAMSummerStudents2021/Shared%20Documents/General/Mocks/New%20Wireframe%202.png
 
-class BetsFragment : Fragment(R.layout.bets_fragment_layout), RecyclerViewClickListener {
+class BetsFragment : Fragment(R.layout.bets_fragment_layout), RecyclerViewClickListener, AdapterView.OnItemSelectedListener {
     private var _binding: BetsFragmentLayoutBinding? = null
     private val binding get() = _binding!!
     private lateinit var betsAdapter: BetsListAdapter
@@ -46,17 +48,17 @@ class BetsFragment : Fragment(R.layout.bets_fragment_layout), RecyclerViewClickL
         viewModel.getIFollowList()
         //viewModel.addBet()
 
-
+        val followerList: Spinner = binding.FollowerSpinner
         viewModel.iFollowList.observe(viewLifecycleOwner, Observer {
             it?.let {
                 followerNamesList =  viewModel.getFollowersNames()
                 val followerAdapter = ArrayAdapter(requireActivity(), R.layout.followers_spinner_item, followerNamesList)
-                val followerList: Spinner = binding.FollowerSpinner
                 followerList.adapter = followerAdapter
                 followerAdapter.notifyDataSetChanged()
 
             }
         })
+        followerList.onItemSelectedListener = this
 
         viewModel.betsList.observe(viewLifecycleOwner, Observer {
             it?.let {
@@ -91,8 +93,33 @@ class BetsFragment : Fragment(R.layout.bets_fragment_layout), RecyclerViewClickL
     }
 
     override fun onRecyclerViewItemClickListener(view: View, id: Int) {
-        TODO("Not yet implemented")
+        when (view.id)
+        {
+            R.id.BetLayout ->{
+                val betDescriptionDialog: BetDescriptionDialog = BetDescriptionDialog()
+                val args = Bundle()
+                args.putInt("id", id)
+                betDescriptionDialog.arguments = args
+                betDescriptionDialog.show(parentFragmentManager, "StatSettingsDialog")
+            }
+        }
+
     }
+
+    override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+        val viewModel =  get<BetsViewModel>()
+        when (parent?.id){
+            R.id.FollowerSpinner -> {
+                viewModel.selectedFollowerNumber = position
+                viewModel.setBetList()
+            }
+        }
+
+    }
+
+    override fun onNothingSelected(parent: AdapterView<*>?) {
+    }
+
 
 }
 

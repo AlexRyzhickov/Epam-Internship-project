@@ -18,6 +18,8 @@ class BetsViewModel(application: Application) : AndroidViewModel(application) {
 
     private val db = FirebaseFirestore.getInstance()
     private val users = db.collection("users")
+    var selectedFollowerNumber = 0
+    var activeFollower: MutableLiveData<Follower> = MutableLiveData()
     var activeUser: MutableLiveData<User> = MutableLiveData()
     var betsList: MutableLiveData<List<Bet?>> = MutableLiveData()
     private lateinit var sharedPreferences: SharedPreferences
@@ -65,30 +67,32 @@ class BetsViewModel(application: Application) : AndroidViewModel(application) {
                 for (document in documents){
                     var bet: Bet = Bet()
                     bet.name = document.data?.get("name").toString()
-                    bet.betText = document.data?.get("description").toString()
+                    bet.ifImWin = document.data?.get("if_win").toString()
+                    bet.description = document.data?.get("description").toString()
+                    bet.endDate = document.data?.get("end_date").toString()
+                    val opponent = document.data?.get("opponent") as Map<String, String>
+                    bet.opponentName = opponent["name"]!!
+                    bet.opponentEmail = opponent["email"]!!
+                    bet.ifOpponentWin = opponent["if_win"]!!
                     newBetList.add(bet)
                 }
-                //user.activeBetList = document.data?.get("bets") as MutableList<Bet>
                 user.activeBetList = newBetList
-                //activeUser.value = user
-                //betsList.value = activeUser.value?.activeBetList
                 activeUser.value = user
-                betsList.value = activeUser.value?.activeBetList
+                setBetList()
+                //betsList.value = activeUser.value?.activeBetList
             }
-
         }
     }
 
-
-    //ALERT HARDCODE SHIT
-    fun addBet(){
-        betsList.value = activeUser.value?.activeBetList
-        /*
+    fun setBetList() {
         var newBetList: MutableList<Bet> = mutableListOf()
-        var bet: Bet = Bet("Name", "aaaaaaaa@gmail.com", "andrei@gmail.com", "Blablabla")
-        newBetList.add(bet)
+        activeUser.value?.activeBetList?.forEach {
+            val a = it.opponentEmail
+            val b = iFollowList.value?.get(selectedFollowerNumber)?.email
+            if(it.opponentEmail == iFollowList.value?.get(selectedFollowerNumber)?.email)
+                newBetList.add(it)
+        }
         betsList.value = newBetList
-         */
     }
 
 
