@@ -19,8 +19,8 @@ import kotlinx.coroutines.launch
 class AuthFragment : Fragment() {
 
     lateinit var mAuth: FirebaseAuth
-    private var _binding: AuthFragmentBinding? = null
-    private val binding get() = _binding!!
+    private var bindingVar: AuthFragmentBinding? = null
+    private val binding get() = bindingVar!!
     private lateinit var authInterface: AuthInterface
     private lateinit var viewModel: BetsViewModel
 
@@ -32,7 +32,7 @@ class AuthFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        _binding = AuthFragmentBinding.inflate(inflater, container, false)
+        bindingVar = AuthFragmentBinding.inflate(inflater, container, false)
         mAuth = FirebaseAuth.getInstance()
 
         viewModel = ViewModelProvider(this).get(BetsViewModel::class.java)
@@ -88,7 +88,7 @@ class AuthFragment : Fragment() {
 
     override fun onDestroyView() {
         super.onDestroyView()
-        _binding = null
+        bindingVar = null
     }
 
 }

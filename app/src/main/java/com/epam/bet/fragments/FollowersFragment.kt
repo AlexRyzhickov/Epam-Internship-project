@@ -13,8 +13,8 @@ import com.epam.bet.databinding.FollowersFragmentBinding
 import com.epam.bet.viewmodel.SubscribeViewModel
 
 class FollowersFragment: Fragment(R.layout.followers_fragment) {
-    private var _binding: FollowersFragmentBinding? = null
-    private val binding get() = _binding!!
+    private var bindingVar: FollowersFragmentBinding? = null
+    private val binding get() = bindingVar!!
     private lateinit var followersAdapter: UserDataAdapter
 
     override fun onCreateView(
@@ -22,7 +22,7 @@ class FollowersFragment: Fragment(R.layout.followers_fragment) {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        _binding = FollowersFragmentBinding.inflate(inflater, container, false)
+        bindingVar = FollowersFragmentBinding.inflate(inflater, container, false)
 
         val viewModel = ViewModelProvider(requireActivity()).get(SubscribeViewModel::class.java)
 
@@ -45,6 +45,6 @@ class FollowersFragment: Fragment(R.layout.followers_fragment) {
 
     override fun onDestroy() {
         super.onDestroy()
-        _binding = null
+        bindingVar = null
     }
 }

@@ -16,8 +16,8 @@ import com.epam.bet.viewmodel.SubscribeViewModel
 
 class IFollowFragment : Fragment(R.layout.i_follow_fragment) {
 
-    private var _binding: IFollowFragmentBinding? = null
-    private val binding get() = _binding!!
+    private var bindingVar: IFollowFragmentBinding? = null
+    private val binding get() = bindingVar!!
     private lateinit var subscribersAdapter: UserDataAdapter
 
     override fun onCreateView(
@@ -25,7 +25,7 @@ class IFollowFragment : Fragment(R.layout.i_follow_fragment) {
             container: ViewGroup?,
             savedInstanceState: Bundle?
     ): View? {
-        _binding = IFollowFragmentBinding.inflate(inflater, container, false)
+        bindingVar = IFollowFragmentBinding.inflate(inflater, container, false)
 
         val viewModel = ViewModelProvider(requireActivity()).get(SubscribeViewModel::class.java)
 
@@ -53,6 +53,6 @@ class IFollowFragment : Fragment(R.layout.i_follow_fragment) {
 
     override fun onDestroy() {
         super.onDestroy()
-        _binding = null
+        bindingVar = null
     }
 }

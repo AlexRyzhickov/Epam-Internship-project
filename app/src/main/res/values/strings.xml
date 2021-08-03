@@ -1,3 +1,7 @@
 <resources>
     <string name="app_name">EpamIntershipBet</string>
+    <string name="followers">Followers</string>
+    <string name="iFollow">I follow</string>
+    <string name="userNickname">Nickname: %1$s</string>
+    <string name="userEmail">Email: %1$s</string>
 </resources>

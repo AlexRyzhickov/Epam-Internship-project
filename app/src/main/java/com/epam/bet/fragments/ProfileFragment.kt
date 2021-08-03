@@ -20,17 +20,14 @@ import com.google.android.material.tabs.TabLayoutMediator
 
 class ProfileFragment : Fragment(R.layout.profile_fragment) {
 
-    private var _binding: ProfileFragmentBinding? = null
-    private val binding get() = _binding!!
+    private var bindingVar: ProfileFragmentBinding? = null
+    private val binding get() = bindingVar!!
     private lateinit var authInterface: AuthInterface
     private lateinit var adapter: ProfileTabsAdapter
     private lateinit var viewPager: ViewPager2
     private lateinit var tabLayout: TabLayout
 
-    private val tabNames: Array<String> = arrayOf(
-        "Followers",
-        "I follow",
-    )
+    private lateinit var tabNames: Array<String>
 
 
     override fun onCreateView(
@@ -38,16 +35,21 @@ class ProfileFragment : Fragment(R.layout.profile_fragment) {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        _binding = ProfileFragmentBinding.inflate(inflater, container, false)
+        bindingVar = ProfileFragmentBinding.inflate(inflater, container, false)
 
         activity?.let{
             instantiateAutorizationInterface(it)
         }
 
+        tabNames = arrayOf(
+            resources.getString(R.string.followers),
+            resources.getString(R.string.iFollow)
+        )
+
         val user = authInterface.getUserData()
         if (!user.name.equals("none") && !user.email.equals("none")){
-            binding.userProfileName.text = "Nickname: ${user.name}"
-            binding.userProfileEmail.text = "Email: ${user.email}"
+            binding.userProfileName.text = resources.getString(R.string.userNickname, user.name)
+            binding.userProfileEmail.text = resources.getString(R.string.userEmail, user.email)
         }
 
         binding.logOutBtn.setOnClickListener {
@@ -73,7 +75,7 @@ class ProfileFragment : Fragment(R.layout.profile_fragment) {
 
     override fun onDestroy() {
         super.onDestroy()
-        _binding = null
+        bindingVar = null
     }
 
 }

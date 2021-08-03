@@ -16,8 +16,8 @@ import org.koin.android.ext.android.get
 
 class SearchWindowDialog: DialogFragment() {
 
-    private var _binding: SearchWindowDialogBinding? = null
-    private val binding get() = _binding!!
+    private var bindingVar: SearchWindowDialogBinding? = null
+    private val binding get() = bindingVar!!
     private var searchInProgress = false;
 
     override fun onCreateView(
@@ -25,7 +25,7 @@ class SearchWindowDialog: DialogFragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        _binding = SearchWindowDialogBinding.inflate(inflater, container, false)
+        bindingVar = SearchWindowDialogBinding.inflate(inflater, container, false)
 
         val viewModel =  get<SubscribeViewModel>()
 
