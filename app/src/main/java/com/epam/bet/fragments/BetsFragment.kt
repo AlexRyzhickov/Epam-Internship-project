@@ -26,8 +26,8 @@ import org.koin.android.ext.android.get
 //https://epam.sharepoint.com/sites/EPAMSummerStudents2021/Shared%20Documents/General/Mocks/New%20Wireframe%202.png
 
 class BetsFragment : Fragment(R.layout.bets_fragment_layout), RecyclerViewClickListener, AdapterView.OnItemSelectedListener {
-    private var _binding: BetsFragmentLayoutBinding? = null
-    private val binding get() = _binding!!
+    private var bindingVar: BetsFragmentLayoutBinding? = null
+    private val binding get() = bindingVar!!
     private lateinit var betsAdapter: BetsListAdapter
     private lateinit var betsList: RecyclerView
     private var followerNamesList: Array<String> = arrayOf()
@@ -38,7 +38,7 @@ class BetsFragment : Fragment(R.layout.bets_fragment_layout), RecyclerViewClickL
         savedInstanceState: Bundle?
     ): View? {
 
-        _binding = BetsFragmentLayoutBinding.inflate(inflater, container, false)
+        bindingVar = BetsFragmentLayoutBinding.inflate(inflater, container, false)
         betsList = binding.BetsList
 
 

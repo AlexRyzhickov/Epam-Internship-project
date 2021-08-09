@@ -19,17 +19,14 @@ class BetsViewModel(application: Application) : AndroidViewModel(application) {
     private val db = FirebaseFirestore.getInstance()
     private val users = db.collection("users")
     var selectedFollowerNumber = 0
-    var activeFollower: MutableLiveData<Follower> = MutableLiveData()
     var activeUser: MutableLiveData<User> = MutableLiveData()
     var betsList: MutableLiveData<List<Bet?>> = MutableLiveData()
     private lateinit var sharedPreferences: SharedPreferences
     var iFollowList: MutableLiveData<MutableList<Follower>> = MutableLiveData()
 
     fun getIFollowList() {
-        sharedPreferences = getApplication<Application>().applicationContext
-            .getSharedPreferences("BetAppSettings", Context.MODE_PRIVATE)
         var newList: MutableList<Follower> = mutableListOf()
-        val email = sharedPreferences.getString("email", "none")
+        val email = getPreferenceMail()
         if (email != "none") {
             users.document(email!!).collection("i_follow").get().addOnSuccessListener { documents ->
                 for (document in documents) {
@@ -54,10 +51,9 @@ class BetsViewModel(application: Application) : AndroidViewModel(application) {
 
 
     fun fetchUser(){
-        sharedPreferences = getApplication<Application>().applicationContext.getSharedPreferences("BetAppSettings", Context.MODE_PRIVATE)
         val user: User = User()
         var newBetList: MutableList<Bet> = mutableListOf()
-        val email = sharedPreferences.getString("email", "none")
+        val email = getPreferenceMail()
         if(email!="none"){
             users.document(email!!).get().addOnSuccessListener { document ->
                 user.name = document.data?.get("name").toString()
@@ -79,7 +75,6 @@ class BetsViewModel(application: Application) : AndroidViewModel(application) {
                 user.activeBetList = newBetList
                 activeUser.value = user
                 setBetList()
-                //betsList.value = activeUser.value?.activeBetList
             }
         }
     }
@@ -109,6 +104,11 @@ class BetsViewModel(application: Application) : AndroidViewModel(application) {
             .addOnFailureListener {
                 context?.showToast("You haven't registered yet")
             }
+    }
+
+    fun getPreferenceMail():String? {
+        sharedPreferences = getApplication<Application>().applicationContext.getSharedPreferences("BetAppSettings", Context.MODE_PRIVATE)
+        return sharedPreferences.getString("email", "none")
     }
 
 }
