@@ -42,11 +42,9 @@ class BetsFragment : Fragment(R.layout.bets_fragment_layout), RecyclerViewClickL
         betsList = binding.BetsList
 
 
-        //val viewModel = ViewModelProvider(this).get(BetsViewModel::class.java)
         val viewModel =  get<BetsViewModel>()
         viewModel.fetchUser()
         viewModel.getIFollowList()
-        //viewModel.addBet()
 
         val followerList: Spinner = binding.FollowerSpinner
         viewModel.iFollowList.observe(viewLifecycleOwner, Observer {
@@ -55,7 +53,6 @@ class BetsFragment : Fragment(R.layout.bets_fragment_layout), RecyclerViewClickL
                 val followerAdapter = ArrayAdapter(requireActivity(), R.layout.followers_spinner_item, followerNamesList)
                 followerList.adapter = followerAdapter
                 followerAdapter.notifyDataSetChanged()
-
             }
         })
         followerList.onItemSelectedListener = this
@@ -70,10 +67,7 @@ class BetsFragment : Fragment(R.layout.bets_fragment_layout), RecyclerViewClickL
                 }
             }
         })
-
-
         return binding.root
-
     }
 
 

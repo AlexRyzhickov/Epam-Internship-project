@@ -23,7 +23,6 @@ class BetsListAdapter(betList: List<Bet?>, private val listener: RecyclerViewCli
 
     override fun onBindViewHolder(holder: BetsViewHolder, position: Int) {
         var bet: Bet? = betList[position]
-
         holder.bind(bet)
 
 
