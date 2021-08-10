@@ -32,6 +32,7 @@ class BetsFragment : Fragment(R.layout.bets_fragment_layout), RecyclerViewClickL
     private lateinit var betsList: RecyclerView
     private var followerNamesList: Array<String> = arrayOf()
 
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -40,7 +41,6 @@ class BetsFragment : Fragment(R.layout.bets_fragment_layout), RecyclerViewClickL
 
         bindingVar = BetsFragmentLayoutBinding.inflate(inflater, container, false)
         betsList = binding.BetsList
-
 
         val viewModel =  get<BetsViewModel>()
         viewModel.fetchUser()
@@ -68,6 +68,7 @@ class BetsFragment : Fragment(R.layout.bets_fragment_layout), RecyclerViewClickL
             }
         })
         return binding.root
+
     }
 
 
@@ -81,9 +82,6 @@ class BetsFragment : Fragment(R.layout.bets_fragment_layout), RecyclerViewClickL
             val action = BetsFragmentDirections.actionBetFragmentToPickUserFragment()
             findNavController().navigate(action)
         }
-
-
-
     }
 
     override fun onRecyclerViewItemClickListener(view: View, id: Int) {
@@ -113,7 +111,6 @@ class BetsFragment : Fragment(R.layout.bets_fragment_layout), RecyclerViewClickL
 
     override fun onNothingSelected(parent: AdapterView<*>?) {
     }
-
 
 }
 

@@ -6,6 +6,8 @@
     <string name="if_i_win">If I Win:</string>
     <string name="if_opponent_win">If Opponent Win:</string>
     <string name="end_date">End Date:</string>
-
-
+    <string name="followers">Followers</string>
+    <string name="iFollow">I follow</string>
+    <string name="userNickname">Nickname: %1$s</string>
+    <string name="userEmail">Email: %1$s</string>
 </resources>

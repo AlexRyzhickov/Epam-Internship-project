@@ -17,8 +17,8 @@ import com.google.firebase.auth.FirebaseAuth
 class RegistrationFragment : Fragment() {
 
     lateinit var mAuth: FirebaseAuth
-    private var _binding: RegistrationFragmentBinding? = null
-    private val binding get() = _binding!!
+    private var bindingVar: RegistrationFragmentBinding? = null
+    private val binding get() = bindingVar!!
     private lateinit var authInterface: AuthInterface
     lateinit var viewModel: BetsViewModel
 
@@ -27,7 +27,7 @@ class RegistrationFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        _binding = RegistrationFragmentBinding.inflate(inflater, container, false)
+        bindingVar = RegistrationFragmentBinding.inflate(inflater, container, false)
         mAuth = FirebaseAuth.getInstance()
 
         viewModel = ViewModelProvider(this).get(BetsViewModel::class.java)
@@ -75,7 +75,7 @@ class RegistrationFragment : Fragment() {
 
     override fun onDestroyView() {
         super.onDestroyView()
-        _binding = null
+        bindingVar = null
     }
 
 }

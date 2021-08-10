@@ -56,6 +56,7 @@ class BetsViewModel(application: Application) : AndroidViewModel(application) {
         val user: User = User()
         var newBetList: MutableList<Bet> = mutableListOf()
         val email = getPreferenceMail()
+
         if(email!="none"){
             users.document(email!!).get().addOnSuccessListener { document ->
                 user.name = document.data?.get("name").toString()

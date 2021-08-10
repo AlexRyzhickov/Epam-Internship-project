@@ -11,7 +11,6 @@ import com.epam.bet.entities.Bet
 import com.epam.bet.interfaces.RecyclerViewClickListener
 
 
-
 class BetsListAdapter(betList: List<Bet?>, private val listener: RecyclerViewClickListener): Adapter<BetsListAdapter.BetsViewHolder>() {
     private var betList: List<Bet?> = betList
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BetsViewHolder {
@@ -39,6 +38,7 @@ class BetsListAdapter(betList: List<Bet?>, private val listener: RecyclerViewCli
             itemBinding.BetLayout.setOnClickListener{
                 listener.onRecyclerViewItemClickListener(itemBinding.BetLayout, adapterPosition)
             }
+
 
         }
 
