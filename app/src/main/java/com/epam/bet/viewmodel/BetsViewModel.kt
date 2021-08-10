@@ -6,6 +6,8 @@ import android.content.SharedPreferences
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.ViewModel
+import com.epam.bet.MainApp
+import com.epam.bet.R
 import com.epam.bet.entities.Bet
 import com.epam.bet.entities.Follower
 import com.epam.bet.entities.User
@@ -15,7 +17,7 @@ import com.google.firebase.firestore.FirebaseFirestore
 
 
 class BetsViewModel(application: Application) : AndroidViewModel(application) {
-
+    private val context: Context = application
     private val db = FirebaseFirestore.getInstance()
     private val users = db.collection("users")
     var selectedFollowerNumber = 0
@@ -107,7 +109,8 @@ class BetsViewModel(application: Application) : AndroidViewModel(application) {
     }
 
     fun getPreferenceMail():String? {
-        sharedPreferences = getApplication<Application>().applicationContext.getSharedPreferences("BetAppSettings", Context.MODE_PRIVATE)
+        sharedPreferences = getApplication<Application>().applicationContext.getSharedPreferences(MainApp.applicationContext().getString(
+            R.string.app_name), Context.MODE_PRIVATE)
         return sharedPreferences.getString("email", "none")
     }
 

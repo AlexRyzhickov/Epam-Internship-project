@@ -29,10 +29,8 @@ class MainActivity : AppCompatActivity(), AuthInterface {
 
         bottomNavigationView = findViewById(R.id.bottomNavigationView)
         bottomNavigationView.itemIconTintList = null
-
-        //val viewModel =  ViewModelProvider(this).get(BetsViewModel::class.java)
-
-        sharedPreferences = this.getSharedPreferences("BetAppSettings", Context.MODE_PRIVATE)
+        
+        sharedPreferences = this.getSharedPreferences(getString(R.string.app_name), Context.MODE_PRIVATE)
 
         val navHostFragment = supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment
         val inflater = navHostFragment.navController.navInflater
