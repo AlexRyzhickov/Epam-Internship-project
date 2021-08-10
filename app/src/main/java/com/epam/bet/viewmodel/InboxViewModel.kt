@@ -20,11 +20,11 @@ class InboxViewModel(application: Application) : AndroidViewModel(application) {
     private val db = FirebaseFirestore.getInstance()
     private val users = db.collection("users")
     private val inbox = db.collection("inbox")
-    private lateinit var sharedPreferences: SharedPreferences
+    private var sharedPreferences = SharedPreferencesProvider(getApplication<Application>().applicationContext)
 
 
     fun getSubscriptionOptions(): FirestoreRecyclerOptions<InboxMessage> {
-        val email = getSharedPreferencesData("email")
+        val email = sharedPreferences.get("email")
         val query: Query = inbox.whereEqualTo("receiver.email", email)
 
         return FirestoreRecyclerOptions.Builder<InboxMessage>()
@@ -40,13 +40,6 @@ class InboxViewModel(application: Application) : AndroidViewModel(application) {
                 )
             }
             .build()
-    }
-
-    fun getSharedPreferencesData(key: String, defValue: String = "none"): String? {
-        if (!this::sharedPreferences.isInitialized){
-            sharedPreferences = getApplication<Application>().applicationContext.getSharedPreferences("BetAppSettings", Context.MODE_PRIVATE)
-        }
-        return sharedPreferences.getString(key, defValue)
     }
 
 }

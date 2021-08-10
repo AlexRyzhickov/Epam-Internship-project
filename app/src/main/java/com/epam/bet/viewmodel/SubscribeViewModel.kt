@@ -15,15 +15,15 @@ class SubscribeViewModel(application: Application) : AndroidViewModel(applicatio
 
     private val db = FirebaseFirestore.getInstance()
     private val users = db.collection("users")
-    private lateinit var sharedPreferences: SharedPreferences
+    private var sharedPreferences = SharedPreferencesProvider(getApplication<Application>().applicationContext)
 
     fun isCurUserEmail(email: String): Boolean {
-        val curUserEmail = getSharedPreferencesData("email")
+        val curUserEmail = sharedPreferences.get("email")
         return email == curUserEmail
     }
 
     fun isIFollow(email: String, context: Context?): Boolean {
-        val userEmail = getSharedPreferencesData("email")
+        val userEmail = sharedPreferences.get("email")
         val emailList = mutableListOf<String>()
         var isSuccess = false
         users.document(userEmail!!).collection("i_follow").get()
@@ -46,8 +46,8 @@ class SubscribeViewModel(application: Application) : AndroidViewModel(applicatio
     }
 
     fun addIFollow(email: String, successListener: (email: String) -> Unit, failListener: () -> Unit) {
-        val curUserEmail = getSharedPreferencesData("email")
-        val curUserName = getSharedPreferencesData("name")
+        val curUserEmail = sharedPreferences.get("email")
+        val curUserName = sharedPreferences.get("name")
 
         val TAG = "addIFollow debug"
         users.document(email).get().addOnCompleteListener { task ->
@@ -82,7 +82,7 @@ class SubscribeViewModel(application: Application) : AndroidViewModel(applicatio
     }
 
     fun getSubscriptionOptions(): FirestoreRecyclerOptions<Follower> {
-        val email = getSharedPreferencesData("email")
+        val email = sharedPreferences.get("email")
         val query: Query = users.document(email!!).collection("i_follow")
         return FirestoreRecyclerOptions.Builder<Follower>()
                 .setQuery(query, Follower::class.java)
@@ -90,18 +90,11 @@ class SubscribeViewModel(application: Application) : AndroidViewModel(applicatio
     }
 
     fun getFollowersOptions(): FirestoreRecyclerOptions<Follower> {
-        val email = getSharedPreferencesData("email")
+        val email = sharedPreferences.get("email")
         val query: Query = users.document(email!!).collection("followers")
         return FirestoreRecyclerOptions.Builder<Follower>()
                 .setQuery(query, Follower::class.java)
                 .build()
-    }
-
-    fun getSharedPreferencesData(key: String, defValue: String = "none"): String? {
-        if (!this::sharedPreferences.isInitialized){
-            sharedPreferences = getApplication<Application>().applicationContext.getSharedPreferences("BetAppSettings", Context.MODE_PRIVATE)
-        }
-        return sharedPreferences.getString(key, defValue)
     }
 
 }
