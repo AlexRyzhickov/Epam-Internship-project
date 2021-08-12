@@ -15,6 +15,7 @@ import com.epam.bet.adapters.BetsListAdapter
 import com.epam.bet.databinding.BetsFragmentLayoutBinding
 import com.epam.bet.interfaces.RecyclerViewClickListener
 import com.epam.bet.viewmodel.BetsViewModel
+import com.epam.bet.viewmodel.SharedPreferencesProvider
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import org.koin.android.ext.android.get
 

@@ -14,13 +14,15 @@ import com.firebase.ui.firestore.FirestoreRecyclerOptions
 import com.firebase.ui.firestore.SnapshotParser
 import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.Query
+import org.koin.android.ext.android.get
+import org.koin.core.context.GlobalContext
 
 class InboxViewModel(application: Application) : AndroidViewModel(application) {
 
     private val db = FirebaseFirestore.getInstance()
     private val users = db.collection("users")
     private val inbox = db.collection("inbox")
-    private var sharedPreferences = SharedPreferencesProvider(getApplication<Application>().applicationContext)
+    private val sharedPreferences : SharedPreferencesProvider by lazy { GlobalContext.get().koin.get() }//get<SharedPreferencesProvider>()
 
 
     fun getSubscriptionOptions(): FirestoreRecyclerOptions<InboxMessage> {

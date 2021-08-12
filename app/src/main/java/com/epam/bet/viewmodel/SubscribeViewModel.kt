@@ -10,12 +10,14 @@ import com.epam.bet.extensions.showToast
 import com.google.firebase.firestore.FirebaseFirestore
 import com.firebase.ui.firestore.FirestoreRecyclerOptions
 import com.google.firebase.firestore.Query
+import org.koin.android.ext.android.get
+import org.koin.core.context.GlobalContext
 
 class SubscribeViewModel(application: Application) : AndroidViewModel(application) {
 
     private val db = FirebaseFirestore.getInstance()
     private val users = db.collection("users")
-    private var sharedPreferences = SharedPreferencesProvider(getApplication<Application>().applicationContext)
+    private val sharedPreferences  : SharedPreferencesProvider by lazy { GlobalContext.get().koin.get() }//= SharedPreferencesProvider(application)
 
     fun isCurUserEmail(email: String): Boolean {
         val curUserEmail = sharedPreferences.get("email")
