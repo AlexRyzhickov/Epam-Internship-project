@@ -15,6 +15,8 @@ import com.epam.bet.interfaces.AuthInterface
 import com.epam.bet.viewmodel.BetsViewModel
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import kotlinx.coroutines.launch
+import org.koin.android.ext.android.get
+
 class MainActivity : AppCompatActivity(), AuthInterface {
 
     private lateinit var bottomNavigationView: BottomNavigationView
@@ -27,8 +29,9 @@ class MainActivity : AppCompatActivity(), AuthInterface {
 
         bottomNavigationView = findViewById(R.id.bottomNavigationView)
         bottomNavigationView.itemIconTintList = null
+        
+        sharedPreferences = this.getSharedPreferences(getString(R.string.app_name), Context.MODE_PRIVATE)
 
-        sharedPreferences = this.getSharedPreferences("BetAppSettings", Context.MODE_PRIVATE)
 
         val navHostFragment = supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment
         val inflater = navHostFragment.navController.navInflater

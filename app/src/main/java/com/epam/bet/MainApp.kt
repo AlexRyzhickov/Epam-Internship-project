@@ -1,6 +1,8 @@
 package com.epam.bet
 
 import android.app.Application
+
+import android.content.Context
 import com.epam.bet.modules.appModule
 
 
@@ -25,5 +27,10 @@ class MainApp : Application() {
         fun getInstance(): MainApp? {
             return instance
         }
+
+        fun applicationContext() : Context {
+            return instance!!.applicationContext
+        }
+
     }
 }
