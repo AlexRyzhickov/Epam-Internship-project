@@ -1,0 +1,17 @@
+package com.epam.bet.viewmodel
+
+import android.app.Application
+import android.content.Context
+import android.content.SharedPreferences
+import androidx.lifecycle.AndroidViewModel
+
+class SharedPreferencesProvider(var application: Application){
+    private lateinit var sharedPreferences: SharedPreferences
+
+    fun get(key: String, defValue: String = "none"): String? {
+        if (!this::sharedPreferences.isInitialized){
+            sharedPreferences = application.applicationContext.getSharedPreferences("BetAppSettings", Context.MODE_PRIVATE)
+        }
+        return sharedPreferences.getString(key, defValue)
+    }
+}
