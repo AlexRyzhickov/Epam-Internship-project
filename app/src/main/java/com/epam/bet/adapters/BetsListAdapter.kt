@@ -35,11 +35,11 @@ class BetsListAdapter(betList: List<Bet?>, private val listener: RecyclerViewCli
 
     class BetsViewHolder(private val itemBinding:BetListItemBinding, private val listener: RecyclerViewClickListener) : RecyclerView.ViewHolder(itemBinding.root) {
         init{
-            /*
             itemBinding.BetLayout.setOnClickListener{
-                listener.onRecyclerViewItemClickListener()
+                listener.onRecyclerViewItemClickListener(itemBinding.BetLayout, adapterPosition)
             }
-             */
+
+
         }
 
         fun bind(bet: Bet?) {

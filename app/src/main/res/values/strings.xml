@@ -1,5 +1,11 @@
 <resources>
     <string name="app_name">EpamIntershipBet</string>
+    <string name="opponent_name">Opponent Name:</string>
+    <string name="opponent_email">Opponent Email:</string>
+    <string name="bet_description">Bet Description:</string>
+    <string name="if_i_win">If I Win:</string>
+    <string name="if_opponent_win">If Opponent Win:</string>
+    <string name="end_date">End Date:</string>
     <string name="followers">Followers</string>
     <string name="iFollow">I follow</string>
     <string name="userNickname">Nickname: %1$s</string>
