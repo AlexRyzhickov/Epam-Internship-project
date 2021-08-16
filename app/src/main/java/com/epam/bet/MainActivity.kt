@@ -29,7 +29,7 @@ class MainActivity : AppCompatActivity(), AuthInterface {
 
         bottomNavigationView = findViewById(R.id.bottomNavigationView)
         bottomNavigationView.itemIconTintList = null
-        
+
         sharedPreferences = this.getSharedPreferences(getString(R.string.app_name), Context.MODE_PRIVATE)
 
 

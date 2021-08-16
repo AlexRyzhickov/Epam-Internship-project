@@ -17,7 +17,6 @@ import com.google.firebase.firestore.FirebaseFirestore
 
 
 class BetsViewModel(application: Application) : AndroidViewModel(application) {
-    private val context: Context = application
     private val db = FirebaseFirestore.getInstance()
     private val users = db.collection("users")
     var selectedFollowerNumber = 0
@@ -85,12 +84,15 @@ class BetsViewModel(application: Application) : AndroidViewModel(application) {
     fun setBetList() {
         var newBetList: MutableList<Bet> = mutableListOf()
         activeUser.value?.activeBetList?.forEach {
-            val a = it.opponentEmail
-            val b = iFollowList.value?.get(selectedFollowerNumber)?.email
             if(it.opponentEmail == iFollowList.value?.get(selectedFollowerNumber)?.email)
                 newBetList.add(it)
         }
         betsList.value = newBetList
+    }
+
+    fun createNewBet(){
+        var newBet: Bet = Bet()
+
     }
 
 
