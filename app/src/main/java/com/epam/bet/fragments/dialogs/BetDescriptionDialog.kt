@@ -10,8 +10,12 @@ import androidx.lifecycle.ViewModelProvider
 import com.epam.bet.R
 import com.epam.bet.databinding.BetDescriptionDialogBinding
 import com.epam.bet.entities.Bet
+import com.epam.bet.entities.InboxMessage
 import com.epam.bet.viewmodel.BetsViewModel
+import com.epam.bet.viewmodel.InboxViewModel
+import com.epam.bet.viewmodel.SharedPreferencesProvider
 import org.koin.android.ext.android.get
+import org.koin.core.context.GlobalContext
 
 
 class BetDescriptionDialog : DialogFragment() {
@@ -19,6 +23,8 @@ class BetDescriptionDialog : DialogFragment() {
     private var _binding: BetDescriptionDialogBinding? = null
     private val binding get() = _binding!!
     private var betNumber: Int = 0
+    private var isInbox: Boolean = false
+    private val sharedPreferences : SharedPreferencesProvider by lazy { GlobalContext.get().koin.get() }
 
     private val TAG = "MyCustomDialog"
 
@@ -28,6 +34,7 @@ class BetDescriptionDialog : DialogFragment() {
         if (arguments != null) {
             val mArgs = arguments
             betNumber = mArgs?.getInt("id")!!
+            isInbox = mArgs.getBoolean("isInbox")
         }
     }
 
@@ -43,8 +50,15 @@ class BetDescriptionDialog : DialogFragment() {
         val view = binding.root
 
         //создание вью-модел и добавление обсервера
-        val viewModel =  get<BetsViewModel>()
-        loadData(viewModel.betsList.value?.get(betNumber)!!)
+        if (!isInbox){
+            val viewModel =  get<BetsViewModel>()
+            loadData(viewModel.betsList.value?.get(betNumber)!!)
+        }
+        else {
+            val viewModel =  get<InboxViewModel>()
+            loadDataInbox(viewModel.inboxList.get(betNumber))
+        }
+
 
 
         return view
@@ -78,5 +92,17 @@ class BetDescriptionDialog : DialogFragment() {
         binding.EndDateValue.text = bet.endDate
         binding.IfIWinValue.text = bet.ifImWin
         binding.IfOpponentWinValue.text = bet.ifOpponentWin
+    }
+
+    private fun loadDataInbox(inboxMessage: InboxMessage) {
+        if (inboxMessage.bet.opponentEmail == sharedPreferences.get("email")) {
+            val bet = inboxMessage.bet.copy()
+            bet.opponentEmail = inboxMessage.from.email
+            bet.opponentName = inboxMessage.from.name
+            loadData(bet)
+        }
+        else {
+            loadData(inboxMessage.bet)
+        }
     }
 }

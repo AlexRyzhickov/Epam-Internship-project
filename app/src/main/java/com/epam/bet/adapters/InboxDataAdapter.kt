@@ -9,17 +9,18 @@ import androidx.recyclerview.widget.RecyclerView
 import com.epam.bet.R
 import com.epam.bet.entities.Follower
 import com.epam.bet.entities.InboxMessage
+import com.epam.bet.interfaces.RecyclerViewClickListener
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter
 import com.firebase.ui.firestore.FirestoreRecyclerOptions
 
-class InboxDataAdapter(options: FirestoreRecyclerOptions<InboxMessage>) : FirestoreRecyclerAdapter<InboxMessage, InboxDataAdapter.InboxViewHolder>(options) {
+class InboxDataAdapter(options: FirestoreRecyclerOptions<InboxMessage>, private val listener: RecyclerViewClickListener) : FirestoreRecyclerAdapter<InboxMessage, InboxDataAdapter.InboxViewHolder>(options) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): InboxViewHolder {
         val itemView = LayoutInflater.from(parent.context).inflate(
             R.layout.inbox_recycler_row,
             parent, false
         )
-        return InboxViewHolder(itemView)
+        return InboxViewHolder(itemView, listener)
     }
 
     override fun onBindViewHolder(holder: InboxViewHolder, position: Int, model: InboxMessage) {
@@ -29,7 +30,7 @@ class InboxDataAdapter(options: FirestoreRecyclerOptions<InboxMessage>) : Firest
         holder.textEmail.text = model.from.email
     }
 
-    class InboxViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+    class InboxViewHolder(itemView: View, private val listener: RecyclerViewClickListener) : RecyclerView.ViewHolder(itemView) {
         var model: InboxMessage? = null
         val textBetShortName: TextView
         val textName: TextView
@@ -37,9 +38,7 @@ class InboxDataAdapter(options: FirestoreRecyclerOptions<InboxMessage>) : Firest
 
         init {
             itemView.setOnClickListener {
-                if (model != null){
-                    Log.d("dialog", model!!.from.name)
-                }
+                listener.onRecyclerViewItemClickListener(itemView.findViewById(R.id.inboxRow), adapterPosition)
             }
             textBetShortName = itemView.findViewById(R.id.betShortName)
             textName = itemView.findViewById(R.id.username)
