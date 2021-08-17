@@ -27,6 +27,7 @@ class InboxViewModel(application: Application) : AndroidViewModel(application) {
     var inboxList: MutableList<InboxMessage> = mutableListOf()
 
     fun getSubscriptionOptions(): FirestoreRecyclerOptions<InboxMessage> {
+        val inboxListCopy = inboxList.toList()
         inboxList = mutableListOf()
         val email = sharedPreferences.get("email")
         val query: Query = inbox.whereEqualTo("receiver.email", email)
@@ -55,6 +56,9 @@ class InboxViewModel(application: Application) : AndroidViewModel(application) {
                     objectReceiver,
                     objectBet
                 )
+                if (inboxMessage !in inboxListCopy){
+                    Log.d("NewInboxMessage", inboxMessage.toString())
+                }
                 inboxList.add(inboxMessage)
                 inboxMessage
             }
