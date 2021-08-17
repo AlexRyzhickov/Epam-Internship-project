@@ -34,18 +34,97 @@ class InboxViewModel(application: Application) : AndroidViewModel(application) {
         return FirestoreRecyclerOptions.Builder<InboxMessage>()
             .setQuery(query
             ) { snapshot ->
+                val id = snapshot.id
                 val receiver = snapshot.get("receiver") as Map<String, String>
                 val sender = snapshot.get("sender") as Map<String, String>
-                val bet = snapshot.get("bet") as Map<String, String>
+                val bet = snapshot.get("bet") as MutableMap<String, String>
+                bet["end_date"] = bet["end_date"].toString()
+
+
+                val objectSender = Follower.from(sender)
+                val objectReceiver = Follower.from(receiver)
+                val objectBet = Bet.from(bet)
+                objectBet.opponentName = objectSender.name
+                objectBet.opponentEmail = objectSender.email
+                objectBet.ifImWin = bet.getOrElse("if_receiver_wins", { "" })
+                objectBet.ifOpponentWin = bet.getOrElse("if_sender_wins", { "" })
+
                 val inboxMessage = InboxMessage(
-                    Follower.from(sender),
-                    Follower.from(receiver),
-                    Bet.from(bet)
+                    id,
+                    objectSender,
+                    objectReceiver,
+                    objectBet
                 )
                 inboxList.add(inboxMessage)
                 inboxMessage
             }
             .build()
+    }
+    
+    fun approveBet(inboxMessage: InboxMessage, successListener: () -> Unit, failListener: () -> Unit) {
+
+        val curUserEmail = sharedPreferences.get("email")
+        val TAG = "approveBet debug"
+
+        var betForCurUser: Bet = inboxMessage.bet.copy()
+
+
+        users.document(inboxMessage.from.email).get().addOnCompleteListener { task ->
+            if (task.isSuccessful) {
+                val document = task.result
+                if (document != null && document.exists() && curUserEmail != "none") {
+                    Log.d(TAG, "DocumentSnapshot data: " + task.result!!.data)
+                    val curUserBetMap = mapOf(
+                        "name" to betForCurUser.name,
+                        "description" to betForCurUser.description,
+                        "if_win" to betForCurUser.ifImWin,
+                        "end_date" to betForCurUser.endDate,
+                        "opponent" to mapOf(
+                            "name" to betForCurUser.opponentName,
+                            "email" to betForCurUser.opponentEmail,
+                            "if_win" to betForCurUser.ifOpponentWin
+                        )
+                    )
+
+                    val opponentBetMap = mapOf(
+                        "name" to inboxMessage.bet.name,
+                        "description" to inboxMessage.bet.description,
+                        "if_win" to inboxMessage.bet.ifOpponentWin,
+                        "end_date" to inboxMessage.bet.endDate,
+                        "opponent" to mapOf(
+                            "name" to inboxMessage.whom.name,
+                            "email" to inboxMessage.whom.email,
+                            "if_win" to inboxMessage.bet.ifImWin
+                        )
+                    )
+
+                    users.document(curUserEmail!!).collection("bets").add(curUserBetMap)
+                        .addOnSuccessListener {
+                            successListener()
+                        }.addOnFailureListener {
+                            failListener()
+                        }
+                    users.document(inboxMessage.from.email).collection("bets").add(opponentBetMap)
+                    inbox.document(inboxMessage.id).delete()
+                    //delete inbox
+                } else {
+                    Log.d(TAG, "No such document")
+                    failListener()
+                }
+            } else {
+                Log.d(TAG, "get failed with ", task.exception)
+                failListener()
+            }
+        }
+    }
+
+    fun declineBet(inboxMessage: InboxMessage, successListener: () -> Unit, failListener: () -> Unit){
+        inbox.document(inboxMessage.id).delete()
+        .addOnSuccessListener {
+            successListener()
+        }.addOnFailureListener {
+            failListener()
+        }
     }
 
 }
