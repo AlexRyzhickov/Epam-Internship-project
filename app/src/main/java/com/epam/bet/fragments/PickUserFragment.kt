@@ -13,6 +13,8 @@ import com.epam.bet.databinding.PickUserFragmentLayoutBinding
 import com.epam.bet.viewmodel.BetsViewModel
 import org.koin.android.ext.android.get
 import androidx.lifecycle.Observer
+import androidx.navigation.fragment.findNavController
+import org.koin.android.ext.android.bind
 
 class PickUserFragment : Fragment(R.layout.create_new_fragment_layout), AdapterView.OnItemSelectedListener {
     private lateinit var binding: PickUserFragmentLayoutBinding
@@ -41,7 +43,10 @@ class PickUserFragment : Fragment(R.layout.create_new_fragment_layout), AdapterV
         followerList.onItemSelectedListener = this
 
         binding.SaveButton.setOnClickListener {
-
+            viewModel.addBet(binding.BetDescriptionValue.text.toString(),binding.IfIWinValue.text.toString(),binding.IfOpponentWinValue.text.toString(),
+                binding.EndDateValue.text.toString(), binding.BetNameValue.text.toString())
+                val action = PickUserFragmentDirections.actionPickUserFragmentToBetFragment() //action_pickUserFragment_to_betFragment
+                findNavController().navigate(action)
         }
 
         return binding.root

@@ -31,7 +31,15 @@
     <fragment
         android:id="@+id/pickUserFragment"
         android:name="com.epam.bet.fragments.PickUserFragment"
-        android:label="PickUserFragment" />
+        android:label="PickUserFragment" >
+        <action
+            android:id="@+id/action_pickUserFragment_to_betFragment"
+            app:destination="@id/betFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right" />
+    </fragment>
     <fragment
         android:id="@+id/authFragment"
         android:name="com.epam.bet.fragments.authentication.AuthFragment"
