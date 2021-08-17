@@ -13,6 +13,7 @@ import com.epam.bet.extensions.showToast
 import com.google.firebase.firestore.FirebaseFirestore
 import com.firebase.ui.firestore.FirestoreRecyclerOptions
 import com.firebase.ui.firestore.SnapshotParser
+import com.google.firebase.Timestamp
 import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.Query
 import org.koin.android.ext.android.get
@@ -39,7 +40,8 @@ class InboxViewModel(application: Application) : AndroidViewModel(application) {
                 val receiver = snapshot.get("receiver") as Map<String, String>
                 val sender = snapshot.get("sender") as Map<String, String>
                 val bet = snapshot.get("bet") as MutableMap<String, String>
-                bet["end_date"] = bet["end_date"].toString()
+                if (bet["end_date"] != null && bet["end_date"] !is String )
+                    bet["end_date"] = (bet["end_date"] as Timestamp).toDate().toString()
 
 
                 val objectSender = Follower.from(sender)
