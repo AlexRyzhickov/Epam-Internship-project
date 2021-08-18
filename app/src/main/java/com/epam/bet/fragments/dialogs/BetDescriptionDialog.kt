@@ -10,8 +10,13 @@ import androidx.lifecycle.ViewModelProvider
 import com.epam.bet.R
 import com.epam.bet.databinding.BetDescriptionDialogBinding
 import com.epam.bet.entities.Bet
+import com.epam.bet.entities.InboxMessage
+import com.epam.bet.extensions.showToast
 import com.epam.bet.viewmodel.BetsViewModel
+import com.epam.bet.viewmodel.InboxViewModel
+import com.epam.bet.viewmodel.SharedPreferencesProvider
 import org.koin.android.ext.android.get
+import org.koin.core.context.GlobalContext
 
 
 class BetDescriptionDialog : DialogFragment() {
@@ -19,6 +24,9 @@ class BetDescriptionDialog : DialogFragment() {
     private var _binding: BetDescriptionDialogBinding? = null
     private val binding get() = _binding!!
     private var betNumber: Int = 0
+    private var isInbox: Boolean = false
+    private val sharedPreferences : SharedPreferencesProvider by lazy { GlobalContext.get().koin.get() }
+    private var operationInProgress: Boolean = false
 
     private val TAG = "MyCustomDialog"
 
@@ -28,6 +36,7 @@ class BetDescriptionDialog : DialogFragment() {
         if (arguments != null) {
             val mArgs = arguments
             betNumber = mArgs?.getInt("id")!!
+            isInbox = mArgs.getBoolean("isInbox")
         }
     }
 
@@ -43,9 +52,34 @@ class BetDescriptionDialog : DialogFragment() {
         val view = binding.root
 
         //создание вью-модел и добавление обсервера
-        val viewModel =  get<BetsViewModel>()
-        loadData(viewModel.betsList.value?.get(betNumber)!!)
-
+        if (!isInbox){
+            val viewModel =  get<BetsViewModel>()
+            binding.agreeButton.visibility = View.INVISIBLE
+            binding.declineButton.visibility = View.INVISIBLE
+            loadData(viewModel.betsList.value?.get(betNumber)!!)
+        }
+        else {
+            val viewModel =  get<InboxViewModel>()
+            loadDataInbox(viewModel.inboxList.get(betNumber))
+            binding.agreeButton.setOnClickListener{
+                if (!operationInProgress) {
+                    operationInProgress = true
+                    viewModel.approveBet(viewModel.inboxList.get(betNumber), ::approveSuccessCallback, ::approveFailCallback)
+                }
+                else{
+                    context?.showToast("Operation in progress. Please, wait.")
+                }
+            }
+            binding.declineButton.setOnClickListener{
+                if (!operationInProgress) {
+                    operationInProgress = true
+                    viewModel.declineBet(viewModel.inboxList.get(betNumber), ::declineSuccessCallback, ::declineFailCallback)
+                }
+                else{
+                    context?.showToast("Operation in progress. Please, wait.")
+                }
+            }
+        }
 
         return view
     }
@@ -78,5 +112,31 @@ class BetDescriptionDialog : DialogFragment() {
         binding.EndDateValue.text = bet.endDate
         binding.IfIWinValue.text = bet.ifImWin
         binding.IfOpponentWinValue.text = bet.ifOpponentWin
+    }
+
+    private fun loadDataInbox(inboxMessage: InboxMessage) {
+        loadData(inboxMessage.bet)
+    }
+
+    private fun approveSuccessCallback(){
+        operationInProgress = false
+        context?.showToast("You approved the bet!")
+        dismiss()
+    }
+
+    private fun approveFailCallback(){
+        operationInProgress = false
+        context?.showToast("Error! Try again later")
+    }
+
+    private fun declineSuccessCallback(){
+        operationInProgress = false
+        context?.showToast("You declined the bet!")
+        dismiss()
+    }
+
+    private fun declineFailCallback(){
+        context?.showToast("Error! Try again later")
+        operationInProgress = false
     }
 }
