@@ -95,8 +95,11 @@ class BetsFragment : Fragment(R.layout.bets_fragment_layout), RecyclerViewClickL
                 betDescriptionDialog.arguments = args
                 betDescriptionDialog.show(parentFragmentManager, "StatSettingsDialog")
             }
+            R.id.button ->{
+                val viewModel =  get<BetsViewModel>()
+                viewModel.deleteBet(id)
+            }
         }
-
     }
 
     override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {

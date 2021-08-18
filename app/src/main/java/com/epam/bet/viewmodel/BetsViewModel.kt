@@ -133,6 +133,16 @@ class BetsViewModel(application: Application) : AndroidViewModel(application) {
                  */
     }
 
+    fun deleteBet(id: Int){
+        var docIdD = ""
+        activeUser.value?.activeBetList?.removeAt(id)
+        users.document(getPreferenceMail()!!).collection("bets").get().addOnSuccessListener{documents ->
+            docIdD = documents.toList().get(id).id
+            users.document(getPreferenceMail()!!).collection("bets").document(docIdD).delete()
+            setBetList()
+        }
+    }
+
 
 
     fun addUser(email: String, name: String, context: Context?) {
