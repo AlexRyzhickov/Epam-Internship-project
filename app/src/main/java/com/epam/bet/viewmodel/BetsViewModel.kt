@@ -104,8 +104,8 @@ class BetsViewModel(application: Application) : AndroidViewModel(application) {
             "email" to sharedPreferences.getString("email", "none")
         )
         val receiver = hashMapOf(
-            "name" to iFollowList.value?.get(selectedFollowerNumber)?.email,
-            "email" to iFollowList.value?.get(selectedFollowerNumber)?.name
+            "name" to iFollowList.value?.get(selectedFollowerNumber)?.name,
+            "email" to iFollowList.value?.get(selectedFollowerNumber)?.email
         )
 
         val bet = hashMapOf(
