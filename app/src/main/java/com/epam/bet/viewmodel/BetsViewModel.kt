@@ -1,6 +1,7 @@
 package com.epam.bet.viewmodel
 
 import android.app.Application
+import android.content.ClipDescription
 import android.content.Context
 import android.content.SharedPreferences
 import androidx.lifecycle.MutableLiveData
@@ -13,13 +14,13 @@ import com.epam.bet.entities.Follower
 import com.epam.bet.entities.User
 import com.epam.bet.extensions.showToast
 import com.google.firebase.firestore.FirebaseFirestore
-
+import com.google.firebase.Timestamp
 
 
 class BetsViewModel(application: Application) : AndroidViewModel(application) {
-    private val context: Context = application
     private val db = FirebaseFirestore.getInstance()
     private val users = db.collection("users")
+    private val inbox = db.collection("inbox")
     var selectedFollowerNumber = 0
     var activeUser: MutableLiveData<User> = MutableLiveData()
     var betsList: MutableLiveData<List<Bet?>> = MutableLiveData()
@@ -68,7 +69,10 @@ class BetsViewModel(application: Application) : AndroidViewModel(application) {
                     bet.name = document.data?.get("name").toString()
                     bet.ifImWin = document.data?.get("if_win").toString()
                     bet.description = document.data?.get("description").toString()
-                    bet.endDate = document.data?.get("end_date").toString()
+                    if (document.data?.get("end_date")!= null && document.data?.get("end_date")!is String)
+                        bet.endDate = (document.data?.get("end_date") as Timestamp).toDate().toString()
+                    else
+                        bet.endDate = document.data?.get("end_date").toString()
                     val opponent = document.data?.get("opponent") as Map<String, String>
                     bet.opponentName = opponent["name"]!!
                     bet.opponentEmail = opponent["email"]!!
@@ -85,12 +89,48 @@ class BetsViewModel(application: Application) : AndroidViewModel(application) {
     fun setBetList() {
         var newBetList: MutableList<Bet> = mutableListOf()
         activeUser.value?.activeBetList?.forEach {
-            val a = it.opponentEmail
-            val b = iFollowList.value?.get(selectedFollowerNumber)?.email
             if(it.opponentEmail == iFollowList.value?.get(selectedFollowerNumber)?.email)
                 newBetList.add(it)
         }
         betsList.value = newBetList
+    }
+
+
+    fun addBet(description: String, ifReceiverWin: String, ifSenderWin: String, endDate: String, betName:String) {
+        sharedPreferences = getApplication<Application>().applicationContext.getSharedPreferences(MainApp.applicationContext().getString(
+            R.string.app_name), Context.MODE_PRIVATE)
+        val sender = hashMapOf(
+            "name" to sharedPreferences.getString("name", "none"),
+            "email" to sharedPreferences.getString("email", "none")
+        )
+        val receiver = hashMapOf(
+            "name" to iFollowList.value?.get(selectedFollowerNumber)?.email,
+            "email" to iFollowList.value?.get(selectedFollowerNumber)?.name
+        )
+
+        val bet = hashMapOf(
+            "name" to betName,
+            "description" to description,
+            "if_receiver_wins" to ifReceiverWin,
+            "if_sender_wins" to ifSenderWin,
+            "end_date" to endDate,
+        )
+
+        val data = hashMapOf(
+            "bet" to bet,
+            "sender" to sender,
+            "receiver" to receiver,
+        )
+        inbox.document().set(data)
+                /*
+            .addOnSuccessListener {
+                context?.showToast("Bet successfully added")
+            }
+            .addOnFailureListener {
+                context?.showToast("Bet not added")
+            }
+
+                 */
     }
 
 
